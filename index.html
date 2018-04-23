@@ -9,19 +9,7 @@ img{
 }
 </style>
 <script src="jquery-3.3.1.min.js"></script>
-<script>
-function sendFeedback(){
-	var email = $("#email").val();
-	var message = $("#message").val();
-	if(email != null && message != null && email != "" && message != ""){
-		$.get("sendfeedback.php?email="+email+"&message="+message, function(data){
-			console.log(data);
-		});
-	} else {
-		alert("Email and message are requried fields for feedback.");
-	}
-}
-</script>
+
 </head>
 <body>
 <div>
@@ -61,7 +49,7 @@ Chris Carr
 <div>
 Upcoming Public Events
 </div>
-<table>
+<table id="events">
 <tr>
 <td>Date</td>
 <td>Time</td>
@@ -72,26 +60,6 @@ Upcoming Public Events
 <td>Details</td>
 <td>What to bring</td>
 </tr>
-<tr>
-<td>July 27, 2018</td>
-<td>9:00 am - 4:30 pm</td>
-<td>Neighbours Day</td>
-<td>Stanley Park Community Centre</td>
-<td>Open to Public</td>
-<td>Free</td>
-<td>Minture Sail Boat builing/race <a href="#">Details</a></td>
-<td></td>
-</tr>
-<tr>
-<td>May 13, 2018</td>
-<td>9:30 am - 11:30 am</td>
-<td>PD Day</td>
-<td>Stanley Park Community Centre</td>
-<td>20 max - 8 spots left <input type="button" value="Register"></td>
-<td>$30</td>
-<td>Foam Rocket, Bridge Building <a href="#">Details</a></td>
-<td>Art clothes</td>
-</tr>
 </table>
 </div>
 <div>
@@ -101,30 +69,12 @@ Upcoming Public Events
 <div>
 Available Projects
 </div>
-<table>
+<table id="projectlist">
 <tr>
 <td>Project Name</td>
 <td>Suggested Age</td>
 <td>Duration</td>
 <td>Details</td>
-</tr>
-<tr>
-<td>Foam Rocket</td>
-<td>4+</td>
-<td>30 min</td>
-<td>Design a foam rocket and lauch it with a bike pump</td>
-</tr>
-<tr>
-<td>Bridge Building</td>
-<td>7+</td>
-<td>45 min</td>
-<td>Design and test a number of bridges from spaghetti and glue</td>
-</tr>
-<tr>
-<td>Build a website</td>
-<td>12+</td>
-<td>1:30 min</td>
-<td>Design and build a personal website</td>
 </tr>
 </table>
 </div>
@@ -133,15 +83,7 @@ Available Projects
 <div>
 Feedback
 </div>
-<div>
-I had fun.
-</div>
-<div>
-I learned many things.
-</div>
-<div>
-I want to go again.
-</div>
+<div id="feedback"></div>
 </div>
 
 <div>
@@ -157,93 +99,111 @@ Message <textarea id="message"></textarea>
 <input type="button" value="Submit" onclick="sendFeedback();">
 </div>
 
-<div>
-Past Events
-</div>
-<table>
-<tr>
-<td>Date</td>
-<td>Time</td>
-<td>Event Type</td>
-<td>Location</td>
-<td>Availablilty</td>
-<td>Price</td>
-<td>Details</td>
-</tr>
-<tr>
-<td>July 27, 2017</td>
-<td>9:00 am - 4:30 pm</td>
-<td>Neighbours Day</td>
-<td>Stanley Park Community Centre</td>
-<td>Open to Public</td>
-<td>Free</td>
-<td>Marshmallow Launcher <a href="#">Details</a></td>
-</tr>
-<tr>
-<td>July 13 - 17, 2017</td>
-<td>9:30 am - 11:30 am</td>
-<td>Summer Camp</td>
-<td>Stanley Park Community Centre</td>
-<td>20 max</td>
-<td>$150</td>
-<td>Foam Rocket, Bridge Building, Elephant Toothpaste, Shadow Art <a href="#">Details</a></td>
-</tr>
-</table>
-
-<div>
-<div>Boat Race
-</div>
-<div>
-<img src="boat.jpg">
-</div>
-<div>
-Build a custom sail boat from recycled materials.
-</div>
+<div id="projectdetails">
 </div>
 
-<div>
-<div>Foam Rocket
-</div>
-<div>
-<img src="rocket.jpg">
-</div>
-<div>
-Build and decorate rockets.
-</div>
-</div>
+<script>
+function sendFeedback(){
+	var email = $("#email").val();
+	var message = $("#message").val();
+	if(email != null && message != null && email != "" && message != ""){
+		$.get("sendfeedback.php?email="+email+"&message="+message, function(data){
+			console.log(data);
+		});
+	} else {
+		alert("Email and message are requried fields for feedback.");
+	}
+}
 
-<div>
-<div>Bridge
-</div>
-<div>
-<img src="bridge.jpg">
-</div>
-<div>
-Build and test bridges.
-</div>
-</div>
+class Event {
+	constructor(date, time, type, location, availability, price, projects, bring){
+		this.date = date;
+		this.time = time;
+		this.type = type;
+		this.location = location;
+		this.availability = availability;
+		this.price = price;
+		this.projects = projects;
+		this.bring = bring;
+	}
+}
 
-<div>
-<div>Rocket Art
-</div>
-<div>
-<img src="filmcan.jpg">
-</div>
-<div>
-Create art through exploding paint.
-</div>
-</div>
+class Project {
+	constructor(name, age, duration, details, image){
+		this.name = name;
+		this.age = age;
+		this.duration = duration;
+		this.details = details;
+		this.image = image;
+	}
+}
 
-<div>
-<div>Elephant Toothpaste
-</div>
-<div>
-<img src="toothpaste.jpg">
-</div>
-<div>
-Learn about acids and bases.
-</div>
-</div>
+class Feedback {
+	constructor(name, date, message){
+		this.name = name;
+		this.date = date;
+		this.message = message;
+	}
+}
 
+var projects = [];
+projects.push(new Project("Foam Rocket", "4+", "30 min", "Design a foam rocket and lauch it with a bike pump", "rocket.jpg"));
+projects.push(new Project("Bridge Building", "7+", "45 min", "Design and test a number of bridges from spaghetti and glue", "bridge.jpg"));
+projects.push(new Project("Build a website", "10+", "60 min", "Design and build a personal website", "website.png"));
+projects.push(new Project("Build a boat", "7+", "45 min", "Build a custom sail boat from recycled materials.", "boat.jpg"));
+projects.push(new Project("Rocket Art", "4+", "45 min", "Create art through exploding paint.", "filmcan.jpg"));
+projects.push(new Project("Elephant Toothpaste", "4+", "15 min", "Learn about acids and bases.", "toothpaste.jpg"));
+
+for(projectKey in projects){
+	var currentProject = projects[projectKey];
+	$("#projectlist").append("<tr><td>"+currentProject.name+"</td><td>"+currentProject.age+"</td><td>"+currentProject.duration+"</td><td>"+currentProject.details+"</td></tr>");
+}
+
+for(projectKey in projects){
+	var currentProject = projects[projectKey];
+	$("#projectdetails").append("<div><div>"+currentProject.name+"</div><div><img src='"+currentProject.image+"'></div><div>"+currentProject.details+"</div></div>");
+}
+
+var events = [];
+events.push(new Event("July 27, 2018", "9:00 am - 4:30 pm", "Community", "Stanley Park Community Centre 505 Franklin Street North Kitchener, ON", "Open to public", "Free", [0, 3], ""));
+events.push(new Event("May 13, 2018", "9:30 am - 11:30 pm", "PD Day", "Stanley Park Community Centre 505 Franklin Street North Kitchener, ON", "8 of 20 spots left", "$30", [1, 2], "Art Clothes"));
+
+
+
+for(eventKey in events){
+	var currentEvent = events[eventKey];
+	var eventString = "<tr>";
+	eventString += "<td>"+currentEvent.date+"</td>";
+	eventString += "<td>"+currentEvent.time+"</td>";
+	eventString += "<td>"+currentEvent.type+"</td>";
+	eventString += "<td>"+currentEvent.location+"</td>";
+	eventString += "<td>"+currentEvent.availability+"</td>";
+	eventString += "<td>"+currentEvent.price+"</td>";
+	var projectString = "";
+	for(projectKey in currentEvent.projects){
+		console.log(currentEvent);
+		var currentProject = currentEvent.projects[projectKey];
+		if(projectString != ""){
+			projectString += ", ";
+		}
+		projectString += projects[currentProject].name;
+	}
+	eventString += "<td>"+projectString+"</td>";
+	eventString += "<td>"+currentEvent.bring+"</td>";
+	eventString += "</tr>";
+	$("#events").append(eventString);
+}
+
+var feedbacks = [];
+feedbacks.push(new Feedback("T", "April 2018", "I had lots of fun."));
+feedbacks.push(new Feedback("T", "March 2018", "I learned many things."));
+feedbacks.push(new Feedback("T", "February 2018", "I want to go again."));
+
+for(feedbackKey in feedbacks){
+	var currentFeedback = feedbacks[feedbackKey];
+	$("#feedback").append("<div>"+currentFeedback.name+" "+currentFeedback.date+" "+currentFeedback.message+"</div>");
+}
+
+</script>
 </body>
 </html>
