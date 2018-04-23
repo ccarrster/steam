@@ -8,6 +8,20 @@ img{
 	max-height: 200px;
 }
 </style>
+<script src="jquery-3.3.1.min.js"></script>
+<script>
+function sendFeedback(){
+	var email = $("#email").val();
+	var message = $("#message").val();
+	if(email != null && message != null && email != "" && message != ""){
+		$.get("sendFeedback.php?email="+email+"&message="+message, function(data){
+			console.log(data);
+		});
+	} else {
+		alert("Email and message are requried fields for feedback.");
+	}
+}
+</script>
 </head>
 <body>
 <div>
@@ -134,13 +148,13 @@ I want to go again.
 Questions/Comments/Feedback
 </div>
 <div>
-Email <input type="text">
+Email <input type="text" id="email">
 </div>
 <div>
-Message <textarea></textarea>
+Message <textarea id="message"></textarea>
 </div>
 <div>
-<input type="submit">
+<input type="button" value="Submit" onclick="sendFeedback();">
 </div>
 
 <div>
