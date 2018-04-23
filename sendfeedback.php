@@ -8,13 +8,6 @@ require_once("OAuth.php");
 
 $mail = new PHPMailer\PHPMailer\PHPMailer();
 
-$mail->SMTPOptions = array(
-   'ssl' => array(
-     'verify_peer' => false,
-     'verify_peer_name' => false,
-     'allow_self_signed' => true
-    )
-);
 $mail->isSMTP();
 $mail->SMTPDebug = 2;
 $mail->SMTPAuth = true;
@@ -36,3 +29,4 @@ if (!$mail->send()) {
 
 
 ?>
+
