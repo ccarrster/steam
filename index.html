@@ -14,7 +14,7 @@ function sendFeedback(){
 	var email = $("#email").val();
 	var message = $("#message").val();
 	if(email != null && message != null && email != "" && message != ""){
-		$.get("sendFeedback.php?email="+email+"&message="+message, function(data){
+		$.get("sendfeedback.php?email="+email+"&message="+message, function(data){
 			console.log(data);
 		});
 	} else {
