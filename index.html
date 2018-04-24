@@ -63,7 +63,7 @@ Upcoming Public Events
 </table>
 </div>
 <div>
-<input type="button" value="Book a private event">
+<input type="button" value="Book a private event" onclick="privateEvent();">
 </div>
 <div>
 <div>
@@ -100,6 +100,9 @@ Message <textarea id="message"></textarea>
 </div>
 
 <div id="projectdetails">
+</div>
+
+<div id="register" style="display:none;">
 </div>
 
 <script>
@@ -165,8 +168,8 @@ for(projectKey in projects){
 }
 
 var events = [];
-events.push(new Event("July 27, 2018", "9:00 am - 4:30 pm", "Community", "Stanley Park Community Centre 505 Franklin Street North Kitchener, ON", "Open to public", "Free", [0, 3], ""));
-events.push(new Event("May 13, 2018", "9:30 am - 11:30 pm", "PD Day", "Stanley Park Community Centre 505 Franklin Street North Kitchener, ON", "8 of 20 spots left", "$30", [1, 2], "Art Clothes"));
+events.push(new Event("July 27, 2018", "9:00 am - 4:30 pm", "Community", "Stanley Park Community Centre 505 Franklin Street North Kitchener, ON", "Open to public", 0, [0, 3], ""));
+events.push(new Event("May 13, 2018", "9:30 am - 11:30 pm", "PD Day", "Stanley Park Community Centre 505 Franklin Street North Kitchener, ON", "8 of 20 spots left", 3000, [1, 2], "Art Clothes"));
 
 
 
@@ -177,8 +180,12 @@ for(eventKey in events){
 	eventString += "<td>"+currentEvent.time+"</td>";
 	eventString += "<td>"+currentEvent.type+"</td>";
 	eventString += "<td>"+currentEvent.location+"</td>";
-	eventString += "<td>"+currentEvent.availability+"</td>";
-	eventString += "<td>"+currentEvent.price+"</td>";
+	eventString += "<td>"+currentEvent.availability+" <a href='#' onclick='register("+eventKey+"); return false;'>Register</a></td>";
+	if(currentEvent.price == 0){
+		eventString += "<td>Free</td>";
+	} else {
+		eventString += "<td>$"+(currentEvent.price / 100.0)+"</td>";
+	}
 	var projectString = "";
 	for(projectKey in currentEvent.projects){
 		var currentProject = currentEvent.projects[projectKey];
@@ -201,6 +208,84 @@ feedbacks.push(new Feedback("T", "February 2018", "I want to go again."));
 for(feedbackKey in feedbacks){
 	var currentFeedback = feedbacks[feedbackKey];
 	$("#feedback").append("<div>"+currentFeedback.name+" "+currentFeedback.date+" "+currentFeedback.message+"</div>");
+}
+
+function register(eventKey){
+	selectedEvent = eventKey;
+	var event = events[eventKey];
+	var projectString = "";
+	for(projectKey in currentEvent.projects){
+		var currentProject = currentEvent.projects[projectKey];
+		if(projectString != ""){
+			projectString += ", ";
+		}
+		projectString += projects[currentProject].name;
+	}
+	var registerString = "<div>Event Registration</div><div>Event Details</div><div>Date "+event.date+"</div><div>Time "+event.time+"</div><div>Type "+event.type+"</div><div>Location "+event.location+"</div><div>Availability "+event.availability+"</div><div>Price $"+event.price / 100.0+"</div><div>Projects "+projectString+"</div><div>What to bring "+event.bring+"</div>";
+	registerString += "<div>Parent/Guardian Name <input type='text'></div><div>Parent/Guardian Phone Number <input type='text'></div><div>Parent/Guardian Email <input type='text'></div><div>Emergency Contact Name <input type='text'></div><div>Emergency Phone Number <input type='text'></div><div>Emergency Email <input type='text'></div><div id='children'></div><div id='summary'></div><input type='button' value='Add Child +' onclick='addChild(true)'><div><input type='button' value='Register' onclick='submitRegistration();'><input type='button' value='Cancel' onclick='cancelRegistration();'></div>";
+	$("#register").html(registerString);
+	addChild(false);
+	$("#register").show();
+}
+
+var childIndex = 0;
+var childCount = 0;
+var selectedEvent = null;
+
+function submitRegistration(){
+	$("#register").html("");
+	alert("Thank you. An email receipt has been sent to you.");
+}
+
+function cancelRegistration(){
+	$("#register").html("");
+}
+
+function updateSummary(){
+	var event = events[selectedEvent];
+	var price = event.price;
+	var priceString = "";
+	if(price == 0){
+		priceString = "Free";
+	} else {
+		priceString = "$" + (price * childCount / 100.0);
+	}
+
+	$("#summary").html("<div>"+childCount+" Children</div><div>Total Price "+priceString+"</div>");
+}
+
+function removeChildRegistration(index){
+	$("#child"+index).remove();
+	childCount -= 1;
+	updateSummary();
+}
+
+function addChild(removable){
+	var childString = "";
+	var removableString = "";
+	if(removable){
+		removableString = "<div><input type='button' value='Remove - ' onclick='removeChildRegistration(\""+childIndex+"\");'></div>";
+	}
+	childString += "<div id='child"+childIndex+"'><div>Childs Name <input type='text'></div><div>Childs Gender <input type='text'></div><div>Childs Age <input type='text'></div><div>Notes, Alergys, Medications, Special Needs</div><div><textarea></textarea></div>"+removableString+"</div>";
+	$("#children").append(childString);
+	childIndex += 1;
+	childCount += 1;
+	updateSummary();
+}
+
+function cancelPrivate(){
+	$("#register").html("");
+}
+
+function registerPrivate(){
+	$("#register").html("");
+	alert("Thank you. An email receipt has been sent to you. We will get back to you with more details.");
+}
+
+function privateEvent(){
+	var eventString = "<div>Book a Private Event</div><div>Name, Email, Date, Time, Location, # Children, Age Ranges, Prefered Projects<textarea></textarea></div><div>Prices vary</div><div><input type='button' value='Book Event' onclick='registerPrivate()'> <input type='button' value='Cancel' onclick='cancelPrivate()'></div>";
+	$("#register").html(eventString);
+	$("#register").show();
 }
 
 </script>
